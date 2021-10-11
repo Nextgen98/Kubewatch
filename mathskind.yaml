@@ -1,0 +1,9 @@
+apiVersion:  maths.tatacommunications.com/v1alpha1
+kind: Maths
+metadata:
+  name: add1
+  namespace: default
+spec:
+  firstNum: 4
+  secondNum: 5
+  operation: add
