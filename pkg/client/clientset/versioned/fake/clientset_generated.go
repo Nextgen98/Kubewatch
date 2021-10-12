@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "Kubewatch/pkg/client/clientset/versioned"
-	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
-	fakemathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1/fake"
+	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/myresource/v1alpha1"
+	fakemathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/myresource/v1alpha1/fake"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"

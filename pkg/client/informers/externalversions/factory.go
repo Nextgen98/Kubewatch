@@ -21,7 +21,7 @@ package externalversions
 import (
 	versioned "Kubewatch/pkg/client/clientset/versioned"
 	internalinterfaces "Kubewatch/pkg/client/informers/externalversions/internalinterfaces"
-	math "Kubewatch/pkg/client/informers/externalversions/math"
+	myresource "Kubewatch/pkg/client/informers/externalversions/myresource"
 	reflect "reflect"
 	sync "sync"
 	time "time"
@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Math() math.Interface
+	Math() myresource.Interface
 }
 
-func (f *sharedInformerFactory) Math() math.Interface {
-	return math.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) Math() myresource.Interface {
+	return myresource.New(f, f.namespace, f.tweakListOptions)
 }

@@ -19,7 +19,7 @@ limitations under the License.
 package externalversions
 
 import (
-	v1alpha1 "Kubewatch/pkg/apis/math/v1alpha1"
+	v1alpha1 "Kubewatch/pkg/apis/myresource/v1alpha1"
 	"fmt"
 
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -53,8 +53,8 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=math.tatacommunications.com, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("maths"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Math().V1alpha1().Maths().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("myresources"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Math().V1alpha1().Myresources().Informer()}, nil
 
 	}
 

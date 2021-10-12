@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	mathv1alpha1 "Kubewatch/pkg/apis/math/v1alpha1"
+	mathv1alpha1 "Kubewatch/pkg/apis/myresource/v1alpha1"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"

@@ -19,7 +19,7 @@ limitations under the License.
 package versioned
 
 import (
-	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
+	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/myresource/v1alpha1"
 	"fmt"
 
 	discovery "k8s.io/client-go/discovery"
