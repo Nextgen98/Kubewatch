@@ -6,7 +6,10 @@ import (
 
 	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
 
+	samplescheme "Kubewatch/pkg/client/clientset/versioned/scheme"
+
 	clientset "Kubewatch/pkg/client/clientset/versioned"
+	"Kubewatch/pkg/client/clientset/versioned/scheme"
 
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -16,6 +19,8 @@ import (
 )
 
 func NewController(sampleclientset clientset.Interface, queue workqueue.RateLimitingInterface, exampleInformer mathinformers.MyresourceInformer) *Controller {
+
+	runtime.Must(samplescheme.AddToScheme(scheme.Scheme))
 
 	exampleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
