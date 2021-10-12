@@ -32,13 +32,13 @@ import (
 
 // FakeMaths implements MathInterface
 type FakeMaths struct {
-	Fake *FakeMathsV1alpha1
+	Fake *FakeMathV1alpha1
 	ns   string
 }
 
-var mathsResource = schema.GroupVersionResource{Group: "maths.tatacommunications.com", Version: "v1alpha1", Resource: "maths"}
+var mathsResource = schema.GroupVersionResource{Group: "math.tatacommunications.com", Version: "v1alpha1", Resource: "maths"}
 
-var mathsKind = schema.GroupVersionKind{Group: "maths.tatacommunications.com", Version: "v1alpha1", Kind: "Math"}
+var mathsKind = schema.GroupVersionKind{Group: "math.tatacommunications.com", Version: "v1alpha1", Kind: "Math"}
 
 // Get takes name of the math, and returns the corresponding math object, and an error if there is any.
 func (c *FakeMaths) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Math, err error) {

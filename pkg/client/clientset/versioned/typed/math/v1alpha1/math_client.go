@@ -25,22 +25,22 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-type MathsV1alpha1Interface interface {
+type MathV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	MathsGetter
 }
 
-// MathsV1alpha1Client is used to interact with features provided by the maths.tatacommunications.com group.
-type MathsV1alpha1Client struct {
+// MathV1alpha1Client is used to interact with features provided by the math.tatacommunications.com group.
+type MathV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *MathsV1alpha1Client) Maths(namespace string) MathInterface {
+func (c *MathV1alpha1Client) Maths(namespace string) MathInterface {
 	return newMaths(c, namespace)
 }
 
-// NewForConfig creates a new MathsV1alpha1Client for the given config.
-func NewForConfig(c *rest.Config) (*MathsV1alpha1Client, error) {
+// NewForConfig creates a new MathV1alpha1Client for the given config.
+func NewForConfig(c *rest.Config) (*MathV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -49,12 +49,12 @@ func NewForConfig(c *rest.Config) (*MathsV1alpha1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &MathsV1alpha1Client{client}, nil
+	return &MathV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new MathsV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new MathV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *MathsV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *MathV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -62,9 +62,9 @@ func NewForConfigOrDie(c *rest.Config) *MathsV1alpha1Client {
 	return client
 }
 
-// New creates a new MathsV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *MathsV1alpha1Client {
-	return &MathsV1alpha1Client{c}
+// New creates a new MathV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *MathV1alpha1Client {
+	return &MathV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -82,7 +82,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *MathsV1alpha1Client) RESTClient() rest.Interface {
+func (c *MathV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

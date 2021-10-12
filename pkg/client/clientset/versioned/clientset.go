@@ -19,7 +19,7 @@ limitations under the License.
 package versioned
 
 import (
-	mathsv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
+	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
 	"fmt"
 
 	discovery "k8s.io/client-go/discovery"
@@ -29,19 +29,19 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	MathsV1alpha1() mathsv1alpha1.MathsV1alpha1Interface
+	MathV1alpha1() mathv1alpha1.MathV1alpha1Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	mathsV1alpha1 *mathsv1alpha1.MathsV1alpha1Client
+	mathV1alpha1 *mathv1alpha1.MathV1alpha1Client
 }
 
-// MathsV1alpha1 retrieves the MathsV1alpha1Client
-func (c *Clientset) MathsV1alpha1() mathsv1alpha1.MathsV1alpha1Interface {
-	return c.mathsV1alpha1
+// MathV1alpha1 retrieves the MathV1alpha1Client
+func (c *Clientset) MathV1alpha1() mathv1alpha1.MathV1alpha1Interface {
+	return c.mathV1alpha1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -65,7 +65,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.mathsV1alpha1, err = mathsv1alpha1.NewForConfig(&configShallowCopy)
+	cs.mathV1alpha1, err = mathv1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.mathsV1alpha1 = mathsv1alpha1.NewForConfigOrDie(c)
+	cs.mathV1alpha1 = mathv1alpha1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -90,7 +90,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.mathsV1alpha1 = mathsv1alpha1.New(c)
+	cs.mathV1alpha1 = mathv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

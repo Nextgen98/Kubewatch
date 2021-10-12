@@ -1,4 +1,4 @@
 // +k8s:deepcopy-gen=package
-// +groupName=maths.tatacommunications.com
+// +groupName=math.tatacommunications.com
 
 package v1alpha1

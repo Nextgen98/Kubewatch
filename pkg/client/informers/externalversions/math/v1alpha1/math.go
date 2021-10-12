@@ -62,13 +62,13 @@ func NewFilteredMathInformer(client versioned.Interface, namespace string, resyn
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.MathsV1alpha1().Maths(namespace).List(context.TODO(), options)
+				return client.MathV1alpha1().Maths(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.MathsV1alpha1().Maths(namespace).Watch(context.TODO(), options)
+				return client.MathV1alpha1().Maths(namespace).Watch(context.TODO(), options)
 			},
 		},
 		&mathv1alpha1.Math{},

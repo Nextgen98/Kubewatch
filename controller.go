@@ -52,6 +52,11 @@ func NewController(kubeclientset kubernetes.Interface,
 	})
 
 	return &Controller{
+ kubeclientset:kubeclientset,
+ sampleclientset:sampleclientset,
+ MathLister: exampleInformer.Lister(),
+ MathSync: exampleInformer.Informer().HasSynced,
+ 
 		informer: informer,
 		queue:    queue,
 	}

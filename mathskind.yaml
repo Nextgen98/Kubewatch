@@ -1,5 +1,5 @@
-apiVersion:  maths.tatacommunications.com/v1alpha1
-kind: Maths
+apiVersion:  math.tatacommunications.com/v1alpha1
+kind: Math
 metadata:
   name: add1
   namespace: default

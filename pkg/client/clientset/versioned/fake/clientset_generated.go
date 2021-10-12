@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "Kubewatch/pkg/client/clientset/versioned"
-	mathsv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
-	fakemathsv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1/fake"
+	mathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1"
+	fakemathv1alpha1 "Kubewatch/pkg/client/clientset/versioned/typed/math/v1alpha1/fake"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
@@ -80,7 +80,7 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// MathsV1alpha1 retrieves the MathsV1alpha1Client
-func (c *Clientset) MathsV1alpha1() mathsv1alpha1.MathsV1alpha1Interface {
-	return &fakemathsv1alpha1.FakeMathsV1alpha1{Fake: &c.Fake}
+// MathV1alpha1 retrieves the MathV1alpha1Client
+func (c *Clientset) MathV1alpha1() mathv1alpha1.MathV1alpha1Interface {
+	return &fakemathv1alpha1.FakeMathV1alpha1{Fake: &c.Fake}
 }

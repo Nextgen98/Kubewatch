@@ -56,7 +56,7 @@ type maths struct {
 }
 
 // newMaths returns a Maths
-func newMaths(c *MathsV1alpha1Client, namespace string) *maths {
+func newMaths(c *MathV1alpha1Client, namespace string) *maths {
 	return &maths{
 		client: c.RESTClient(),
 		ns:     namespace,
