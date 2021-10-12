@@ -77,7 +77,7 @@ func main() {
 
 	exampleInformerFactory := mathInformer.NewSharedInformerFactory(exampleClient, time.Second*30)
 
-	controller := NewController(kclientset, exampleClient, queue, informer, exampleInformerFactory.Maths().V1alpha1().Maths())
+	controller := NewController(kclientset, exampleClient, queue, informer, exampleInformerFactory.Math().V1alpha1().Maths())
 
 	// Now let's start the controller
 	stop := make(chan struct{})
