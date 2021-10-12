@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	mathinformers "Kubewatch/pkg/client/informers/externalversions/math/v1alpha1"
+	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
 
 	clientset "Kubewatch/pkg/client/clientset/versioned"
 
@@ -19,7 +19,7 @@ import (
 
 func NewController(kubeclientset kubernetes.Interface,
 	sampleclientset clientset.Interface, queue workqueue.RateLimitingInterface,
-	informer cache.SharedIndexInformer, exampleInformer mathinformers.MathInformer) *Controller {
+	informer cache.SharedIndexInformer, exampleInformer mathinformers.MyresourceInformer) *Controller {
 
 	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
@@ -52,11 +52,11 @@ func NewController(kubeclientset kubernetes.Interface,
 	})
 
 	return &Controller{
- kubeclientset:kubeclientset,
- sampleclientset:sampleclientset,
- MathLister: exampleInformer.Lister(),
- MathSync: exampleInformer.Informer().HasSynced,
- 
+		kubeclientset:   kubeclientset,
+		sampleclientset: sampleclientset,
+		MathLister:      exampleInformer.Lister(),
+		MathSync:        exampleInformer.Informer().HasSynced,
+
 		informer: informer,
 		queue:    queue,
 	}
@@ -102,7 +102,7 @@ func (c *Controller) syncToStdout(key string) error {
 
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 
-	math, err := c.MathLister.Maths(namespace).Get(name)
+	math, err := c.MathLister.Myresources(namespace).Get(name)
 
 	if err != nil {
 		klog.Errorf("Fetching CRD  with key %s from store failed with %v", key, err)

@@ -1,7 +1,7 @@
 package main
 
 import (
-	mathlisters "Kubewatch/pkg/client/listers/math/v1alpha1"
+	mathlisters "Kubewatch/pkg/client/listers/myresource/v1alpha1"
 
 	clientset "Kubewatch/pkg/client/clientset/versioned"
 
@@ -23,7 +23,7 @@ type Controller struct {
 
 	informer cache.SharedIndexInformer
 
-	MathLister mathlisters.MathLister
+	MathLister mathlisters.MyresourceLister
 
 	MathSync cache.InformerSynced
 }

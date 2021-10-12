@@ -35,8 +35,8 @@ func init() {
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(
 		SchemeGroupVersion,
-		&Math{},
-		&MathList{},
+		&Myresource{},
+		&MyresourceList{},
 	)
 
 	// register the type in the scheme
