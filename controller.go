@@ -6,6 +6,8 @@ import (
 
 	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
 
+	//apiv1Alphav1 "Kubewatch/pkg/apis/myresource/v1alpha1"
+
 	samplescheme "Kubewatch/pkg/client/clientset/versioned/scheme"
 
 	clientset "Kubewatch/pkg/client/clientset/versioned"
@@ -28,6 +30,34 @@ func NewController(sampleclientset clientset.Interface, queue workqueue.RateLimi
 			if err == nil {
 				queue.Add(key)
 			}
+		},
+		UpdateFunc: func(old, new interface{}) {
+
+			/*newDepl := new.(*apiv1Alphav1.Myresource)
+
+			oldDepl := old.(*apiv1Alphav1.Myresource)
+
+			if newDepl.ResourceVersion != oldDepl.ResourceVersion {
+
+				key, err := cache.MetaNamespaceKeyFunc(new)
+				if err == nil {
+					queue.Add(key)
+				}
+
+			} else {
+
+				key, err := cache.MetaNamespaceKeyFunc(old)
+				if err == nil {
+					queue.Add(key)
+				}
+
+			}*/
+
+			key, err := cache.MetaNamespaceKeyFunc(new)
+			if err == nil {
+				queue.Add(key)
+			}
+
 		},
 		DeleteFunc: func(obj interface{}) {
 			key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(obj)
@@ -89,7 +119,7 @@ func (c *Controller) syncToStdout(key string) error {
 
 		case ("sub"):
 			{
-				fmt.Printf("Operation sub   value %d \n", *math.Spec.FirstNum+*math.Spec.SecondNum)
+				fmt.Printf("Operation sub   value %d \n", *math.Spec.FirstNum-*math.Spec.SecondNum)
 
 			}
 		}

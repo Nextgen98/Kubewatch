@@ -51,8 +51,14 @@ func main() {
 
 	controller := NewController(exampleClient, queue, exampleInformerFactory.Math().V1alpha1().Myresources())
 
-	// Now let's start the controller
 	stop := make(chan struct{})
+
+	// Now let's start the Informer
+
+	exampleInformerFactory.Start(stop)
+
+	// Now let's start the controller
+
 	defer close(stop)
 	go controller.Run(1, stop)
 
