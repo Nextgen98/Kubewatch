@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
 
-	//apiv1Alphav1 "Kubewatch/pkg/apis/myresource/v1alpha1"
+	apiv1Alphav1 "Kubewatch/pkg/apis/myresource/v1alpha1"
 
 	samplescheme "Kubewatch/pkg/client/clientset/versioned/scheme"
 
@@ -33,29 +34,17 @@ func NewController(sampleclientset clientset.Interface, queue workqueue.RateLimi
 		},
 		UpdateFunc: func(old, new interface{}) {
 
-			/*newDepl := new.(*apiv1Alphav1.Myresource)
+			newDepl := new.(*apiv1Alphav1.Myresource)
 
 			oldDepl := old.(*apiv1Alphav1.Myresource)
 
-			if newDepl.ResourceVersion != oldDepl.ResourceVersion {
+			if !reflect.DeepEqual(newDepl.Spec, oldDepl.Spec) {
 
 				key, err := cache.MetaNamespaceKeyFunc(new)
 				if err == nil {
 					queue.Add(key)
 				}
 
-			} else {
-
-				key, err := cache.MetaNamespaceKeyFunc(old)
-				if err == nil {
-					queue.Add(key)
-				}
-
-			}*/
-
-			key, err := cache.MetaNamespaceKeyFunc(new)
-			if err == nil {
-				queue.Add(key)
 			}
 
 		},

@@ -20,15 +20,13 @@ type Myresource struct {
 
 	// Spec is the custom resource spec
 	Spec MyresourceSpec `json:"spec"`
- 
-  Status MyresourceStatus `json:"status"`
+
+	Status MyresourceStatus `json:"status"`
 }
 
-type MyresourceStatus struct{
-
-    State string `json:"state"`
-    Message string  `json:"message"`
-
+type MyresourceStatus struct {
+	State   string `json:"state"`
+	Message string `json:"message"`
 }
 
 // MyResourceSpec is the spec for a MyResource resource
@@ -36,8 +34,8 @@ type MyresourceSpec struct {
 	// Message and SomeValue are example custom spec fields
 	//
 	// this is where you would put your custom resource data
-	FirstNum  *int32  `json:"firstNum"`
-	SecondNum *int32  `json:"secondNum"`
+	FirstNum  *int32 `json:"firstNum"`
+	SecondNum *int32 `json:"secondNum"`
 	Operation string `json:"operation"`
 }
 
