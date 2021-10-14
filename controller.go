@@ -1,17 +1,20 @@
 package main
 
 import (
+	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
 	"fmt"
 	"reflect"
 	"time"
 
-	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
+	//appsv1 "k8s.io/api/apps/v1"
 
 	apiv1Alphav1 "Kubewatch/pkg/apis/myresource/v1alpha1"
 
+	appsinformers "k8s.io/client-go/informers/apps/v1"
+
 	samplescheme "Kubewatch/pkg/client/clientset/versioned/scheme"
 
-	clientset "Kubewatch/pkg/client/clientset/versioned"
+	//clientset "Kubewatch/pkg/client/clientset/versioned"
 	"Kubewatch/pkg/client/clientset/versioned/scheme"
 
 	"k8s.io/apimachinery/pkg/util/runtime"
@@ -21,9 +24,40 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func NewController(sampleclientset clientset.Interface, queue workqueue.RateLimitingInterface, exampleInformer mathinformers.MyresourceInformer) *Controller {
+func NewController(queue workqueue.RateLimitingInterface, exampleInformer mathinformers.MyresourceInformer, deployemntInformer appsinformers.DeploymentInformer) *Controller {
 
 	runtime.Must(samplescheme.AddToScheme(scheme.Scheme))
+
+	/*deployemntInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+
+		AddFunc: func(obj interface{}) {
+			key, err := cache.MetaNamespaceKeyFunc(obj)
+			if err == nil {
+				queue.Add(key)
+			}
+		},
+		UpdateFunc: func(old, new interface{}) {
+
+			newDepl := new.(*appsv1.Deployment)
+			oldDepl := old.(*appsv1.Deployment)
+
+			if !reflect.DeepEqual(newDepl.Status, oldDepl.Status) {
+
+				key, err := cache.MetaNamespaceKeyFunc(new)
+				if err == nil {
+					queue.Add(key)
+				}
+
+			}
+
+		},
+		DeleteFunc: func(obj interface{}) {
+			key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(obj)
+			if err == nil {
+				queue.Add(key)
+			}
+		},
+	})*/
 
 	exampleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
@@ -57,10 +91,11 @@ func NewController(sampleclientset clientset.Interface, queue workqueue.RateLimi
 	})
 
 	return &Controller{
-		sampleclientset: sampleclientset,
-		MathLister:      exampleInformer.Lister(),
-		MathSync:        exampleInformer.Informer().HasSynced,
-		queue:           queue,
+		Deploymentlisters: deployemntInformer.Lister(),
+		DeploymentSync:    deployemntInformer.Informer().HasSynced,
+		MathLister:        exampleInformer.Lister(),
+		MathSync:          exampleInformer.Informer().HasSynced,
+		queue:             queue,
 	}
 }
 
@@ -96,6 +131,15 @@ func (c *Controller) syncToStdout(key string) error {
 		return err
 	}
 
+	deployment, err := c.Deploymentlisters.Deployments(math.Namespace).Get("golang-api")
+
+	noOfDeploymentReplica := deployment.Spec.Replicas
+
+	if err != nil {
+		klog.Errorf("Fetching CRD  with key %s from store failed with %v", key, err)
+		return err
+	}
+
 	if math.Spec.Operation != "" {
 
 		switch math.Spec.Operation {
@@ -104,11 +148,21 @@ func (c *Controller) syncToStdout(key string) error {
 			{
 				fmt.Printf("Operation SUM   value %d \n", *math.Spec.FirstNum+*math.Spec.SecondNum)
 
+				if *noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
+
+					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum + *math.Spec.SecondNum), *noOfDeploymentReplica)
+				}
+
 			}
 
 		case ("sub"):
 			{
 				fmt.Printf("Operation sub   value %d \n", *math.Spec.FirstNum-*math.Spec.SecondNum)
+
+				if *noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
+
+					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum + *math.Spec.SecondNum), *noOfDeploymentReplica)
+				}
 
 			}
 		}

@@ -3,7 +3,9 @@ package main
 import (
 	mathlisters "Kubewatch/pkg/client/listers/myresource/v1alpha1"
 
-	clientset "Kubewatch/pkg/client/clientset/versioned"
+	appslisters "k8s.io/client-go/listers/apps/v1"
+
+	//clientset "Kubewatch/pkg/client/clientset/versioned"
 
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
@@ -15,8 +17,9 @@ type Controller struct {
 
 	// kubeclientset is a standard kubernetes clientset
 
-	// sampleclientset is a clientset for our own API group
-	sampleclientset clientset.Interface
+	Deploymentlisters appslisters.DeploymentLister
+
+	DeploymentSync cache.InformerSynced
 
 	queue workqueue.RateLimitingInterface
 

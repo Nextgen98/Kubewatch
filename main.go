@@ -7,6 +7,9 @@ import (
 
 	clientset "Kubewatch/pkg/client/clientset/versioned"
 
+	appsinformers "k8s.io/client-go/informers"
+	"k8s.io/client-go/kubernetes"
+
 	mathInformer "Kubewatch/pkg/client/informers/externalversions"
 
 	"k8s.io/client-go/tools/clientcmd"
@@ -42,25 +45,36 @@ func main() {
 	// Note that when we finally process the item from the workqueue, we might see a newer version
 	// of the Pod than the version which was responsible for triggering the update.
 
+	kClient, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		klog.Fatalf("Error building example clientset: %s", err.Error())
+	}
+
 	exampleClient, err := clientset.NewForConfig(config)
 	if err != nil {
 		klog.Fatalf("Error building example clientset: %s", err.Error())
 	}
 
+	//CRD informer factory
 	exampleInformerFactory := mathInformer.NewSharedInformerFactory(exampleClient, time.Second*30)
 
-	controller := NewController(exampleClient, queue, exampleInformerFactory.Math().V1alpha1().Myresources())
+	//app informer factory
+	deployemntInformerFactory := appsinformers.NewSharedInformerFactory(kClient, time.Second*30)
+
+	controller := NewController(queue, exampleInformerFactory.Math().V1alpha1().Myresources(), deployemntInformerFactory.Apps().V1().Deployments())
 
 	stop := make(chan struct{})
 
 	// Now let's start the Informer
+
+	deployemntInformerFactory.Start(stop)
 
 	exampleInformerFactory.Start(stop)
 
 	// Now let's start the controller
 
 	defer close(stop)
-	go controller.Run(1, stop)
+	go controller.Run(2, stop)
 
 	// Wait forever
 	select {}
