@@ -2,11 +2,10 @@ package main
 
 import (
 	mathinformers "Kubewatch/pkg/client/informers/externalversions/myresource/v1alpha1"
+	"context"
 	"fmt"
 	"reflect"
 	"time"
-
-	//appsv1 "k8s.io/api/apps/v1"
 
 	apiv1Alphav1 "Kubewatch/pkg/apis/myresource/v1alpha1"
 
@@ -14,7 +13,9 @@ import (
 
 	samplescheme "Kubewatch/pkg/client/clientset/versioned/scheme"
 
-	//clientset "Kubewatch/pkg/client/clientset/versioned"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	clientset "Kubewatch/pkg/client/clientset/versioned"
 	"Kubewatch/pkg/client/clientset/versioned/scheme"
 
 	"k8s.io/apimachinery/pkg/util/runtime"
@@ -24,7 +25,7 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func NewController(queue workqueue.RateLimitingInterface, exampleInformer mathinformers.MyresourceInformer, deployemntInformer appsinformers.DeploymentInformer) *Controller {
+func NewController(queue workqueue.RateLimitingInterface, exampleInformer mathinformers.MyresourceInformer, deployemntInformer appsinformers.DeploymentInformer, sampleclientset clientset.Interface) *Controller {
 
 	runtime.Must(samplescheme.AddToScheme(scheme.Scheme))
 
@@ -91,6 +92,7 @@ func NewController(queue workqueue.RateLimitingInterface, exampleInformer mathin
 	})
 
 	return &Controller{
+		sampleclientset:   sampleclientset,
 		Deploymentlisters: deployemntInformer.Lister(),
 		DeploymentSync:    deployemntInformer.Informer().HasSynced,
 		MathLister:        exampleInformer.Lister(),
@@ -124,6 +126,8 @@ func (c *Controller) syncToStdout(key string) error {
 
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 
+	var noOfDeploymentReplica int32
+
 	math, err := c.MathLister.Myresources(namespace).Get(name)
 
 	if err != nil {
@@ -133,12 +137,12 @@ func (c *Controller) syncToStdout(key string) error {
 
 	deployment, err := c.Deploymentlisters.Deployments(math.Namespace).Get("golang-api")
 
-	noOfDeploymentReplica := deployment.Spec.Replicas
-
 	if err != nil {
 		klog.Errorf("Fetching CRD  with key %s from store failed with %v", key, err)
 		return err
 	}
+
+	noOfDeploymentReplica = *deployment.Spec.Replicas
 
 	if math.Spec.Operation != "" {
 
@@ -146,22 +150,24 @@ func (c *Controller) syncToStdout(key string) error {
 
 		case ("sum"):
 			{
-				fmt.Printf("Operation SUM   value %d \n", *math.Spec.FirstNum+*math.Spec.SecondNum)
+				klog.Infof("Operation SUM   value %d \n", *math.Spec.FirstNum+*math.Spec.SecondNum)
 
-				if *noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
+				if noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
 
-					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum + *math.Spec.SecondNum), *noOfDeploymentReplica)
+					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum + *math.Spec.SecondNum), noOfDeploymentReplica)
 				}
 
 			}
 
 		case ("sub"):
 			{
-				fmt.Printf("Operation sub   value %d \n", *math.Spec.FirstNum-*math.Spec.SecondNum)
+				klog.Infof("Operation sub   value %d \n", *math.Spec.FirstNum-*math.Spec.SecondNum)
 
-				if *noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
+				if noOfDeploymentReplica == (*math.Spec.FirstNum + *math.Spec.SecondNum) {
 
-					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum + *math.Spec.SecondNum), *noOfDeploymentReplica)
+					klog.Infof("Operation Value : %d  == golang-api deployment replica no %d ", (*math.Spec.FirstNum - *math.Spec.SecondNum), noOfDeploymentReplica)
+
+					c.updateResourceStatus(math, "Operation Value equels golang-api deployment replica no ", "true")
 				}
 
 			}
@@ -228,4 +234,21 @@ func (c *Controller) Run(threadiness int, stopCh chan struct{}) {
 func (c *Controller) runWorker() {
 	for c.processNextItem() {
 	}
+}
+
+func (c *Controller) updateResourceStatus(foo *apiv1Alphav1.Myresource, message string, state string) error {
+	// NEVER modify objects from the store. It's a read-only, local cache.
+	// You can use DeepCopy() to make a deep copy of original object and modify this copy
+	// Or create a copy manually for better performance
+	resourceCopy := foo.DeepCopy()
+	resourceCopy.Status.State = state
+
+	resourceCopy.Status.Message = message
+
+	// If the CustomResourceSubresources feature gate is not enabled,
+	// we must use Update instead of UpdateStatus to update the Status block of the Foo resource.
+	// UpdateStatus will not allow changes to the Spec of the resource,
+	// which is ideal for ensuring nothing other than resource status has been updated.
+	_, err := c.sampleclientset.MathV1alpha1().Myresources(foo.Namespace).Update(context.TODO(), resourceCopy, metav1.UpdateOptions{})
+	return err
 }

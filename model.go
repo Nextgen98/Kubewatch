@@ -5,7 +5,7 @@ import (
 
 	appslisters "k8s.io/client-go/listers/apps/v1"
 
-	//clientset "Kubewatch/pkg/client/clientset/versioned"
+	clientset "Kubewatch/pkg/client/clientset/versioned"
 
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
@@ -16,6 +16,8 @@ const GroupName = "nextgengroup.com"
 type Controller struct {
 
 	// kubeclientset is a standard kubernetes clientset
+
+	sampleclientset clientset.Interface
 
 	Deploymentlisters appslisters.DeploymentLister
 

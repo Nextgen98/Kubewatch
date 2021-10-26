@@ -61,7 +61,7 @@ func main() {
 	//app informer factory
 	deployemntInformerFactory := appsinformers.NewSharedInformerFactory(kClient, time.Second*30)
 
-	controller := NewController(queue, exampleInformerFactory.Math().V1alpha1().Myresources(), deployemntInformerFactory.Apps().V1().Deployments())
+	controller := NewController(queue, exampleInformerFactory.Math().V1alpha1().Myresources(), deployemntInformerFactory.Apps().V1().Deployments(), exampleClient)
 
 	stop := make(chan struct{})
 

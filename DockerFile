@@ -1,0 +1,19 @@
+FROM golang:latest
+
+WORKDIR /app
+
+
+COPY go.* ./
+
+RUN go mod download
+
+COPY . ./
+
+
+RUN CGO_ENABLED=0 go build  -ldflangs="-s -w" -o server
+
+WORKDIR /app
+
+COPY --from=builder /app/server .
+
+CMD ["/app/server"]
