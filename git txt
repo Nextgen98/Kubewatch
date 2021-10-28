@@ -2,3 +2,17 @@ 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
 
 
 ./code-generator/generate-groups.sh all Kubewatch/pkg/client Kubewatch/pkg/apis math:v1alpha1 --go-header-file code-generator/hack/boilerplate.go.txt --output-base ..
+
+
+curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/$(go env GOOS)/$(go env GOARCH)
+chmod +x kubebuilder && mv kubebuilder /usr/local/bin/
+
+
+
+mkdir -p ~/projects/guestbook
+cd ~/projects/guestbook
+kubebuilder init --domain my.domain --repo my.domain/guestbook
+
+
+
+kubebuilder create api --group webapp --version v1 --kind Guestbook
